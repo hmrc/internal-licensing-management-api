@@ -1,7 +1,8 @@
 
-# internal-licensing-management-api
+# Internal Licensing Management API
 
-This is a placeholder README.md for a new repository
+The import and export of certain goods are controlled by "licences" managed by a number of UK Government agencies (collectively, "Issuing Authorities"). 
+The use of these licences is verified by HMRC on import and export declarations submitted to the Customs Declaration Service (CDS).
 
 ### License
 
