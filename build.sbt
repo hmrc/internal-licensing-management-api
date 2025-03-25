@@ -35,7 +35,6 @@ lazy val it = project
     name := "integration-tests",
     Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-eT"),
     DefaultBuildSettings.itSettings(),
-    addTestReportOption(Test, "int-test-reports")
   )
 
 commands ++= Seq(
