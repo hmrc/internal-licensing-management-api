@@ -7,7 +7,7 @@ Global / bloopAggregateSourceDependencies := true
 Global / bloopExportJarClassifiers := Some(Set("sources"))
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "2.13.16"
 ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
 ThisBuild / semanticdbEnabled := true
 ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
@@ -35,9 +35,8 @@ lazy val it = project
     name := "integration-tests",
     Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-eT"),
     DefaultBuildSettings.itSettings(),
-    addTestReportOption(Test, "int-test-reports")
   )
-  
+
 commands ++= Seq(
   Command.command("cleanAll") { state => "clean" :: "it/clean" :: state },
   Command.command("fmtAll") { state => "scalafmtAll" :: "it/scalafmtAll" :: state },
