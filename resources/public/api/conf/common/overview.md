@@ -1,1 +1,1 @@
-This is a placeholder overview.md for a new API Microservice repository
+An API for the support of the workflow around Internal Licensing Management

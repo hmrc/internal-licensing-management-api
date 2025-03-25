@@ -1,9 +1,9 @@
 {
   "api": {
-    "name": "Hello World",
-    "description": "A 'hello world' example of an API on the HMRC API Developer Hub.",
-    "context": "discuss-with-the-api-platform-team",
-    "categories": ["OTHER"],
+    "name": "Internal Licensing Management",
+    "description": "An API for the support of the workflow around Internal Licensing Management",
+    "context": "customs/internal-licensing-management",
+    "categories": ["CUSTOMS"],
     "versions": [
       {
         "version": "1.0",
