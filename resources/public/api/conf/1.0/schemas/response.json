@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://www.hmrc.gov.uk/webservices/cds/licenceresponse/v1.schema.json",
+  "title": "LicenceResponse",
+  "description": "The response to processing a licence payload.",
+  "type": "object",
+  "required": [
+    "correlationId",
+    "sourceSystem",
+    "destinationSystem",
+    "licenceRef",
+    "result"
+  ],
+  "properties": {
+    "correlationId": {
+      "type": "string"
+    },
+    "sourceSystem": {
+      "type": "string"
+    },
+    "destinationSystem": {
+      "type": "string"
+    },
+    "licenceRef": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string"
+    },
+    "errors": {
+      "type": "array",
+      "items":
+      {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

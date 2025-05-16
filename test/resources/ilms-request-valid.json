@@ -1,0 +1,138 @@
+{
+  "creationDateTime": "2024-01-15T15:18:33+00:00",
+  "correlationId": "123e4567-e89b-12d3-a456-426655440003",
+  "sourceSystem": "ILBDOTI",
+  "destinationSystem": "CDS",
+  "licenceRef": "GBOIL123456",
+  "licenceStatus": "O",
+  "licenceType": "OGE",
+  "licenceUse": "E",
+  "startDate": "1998-01-15",
+  "endDate": "2077-01-15",
+  "licenceLine": [
+    {
+      "lineNumber": 1,
+      "commodity": [
+        {
+          "commodityCode": "101010",
+          "supplement": "SC11"
+        },
+        {
+          "commodityCode": "101020",
+          "supplement": "SC12"
+        },
+        {
+          "commodityCode": "101030",
+          "supplement": "SC13"
+        }
+      ],
+      "controlledBy": "Q",
+      "quantityUnit": "KGM",
+      "quantityIssued": 8009270.235,
+      "goodsDescription": "Material pack goods description"
+    },
+    {
+      "lineNumber": 2,
+      "commodity": [
+        {
+          "commodityCode": "102010",
+          "supplement": "SC21"
+        },
+        {
+          "commodityCode": "102020",
+          "supplement": "SC22"
+        },
+        {
+          "commodityCode": "102030",
+          "supplement": "SC33"
+        }
+      ],
+      "controlledBy": "Q",
+      "quantityUnit": "KGM",
+      "quantityIssued": 8009270.235
+    },
+    {
+      "lineNumber": 3,
+      "commodity": [
+        {
+          "commodityCode": "103010",
+          "supplement": "SC31"
+        },
+        {
+          "commodityCode": "103020",
+          "supplement": "SC32"
+        },
+        {
+          "commodityCode": "103030",
+          "supplement": "SC33"
+        }
+      ],
+      "controlledBy": "Q",
+      "quantityUnit": "KGM",
+      "quantityIssued": 8009270.235,
+      "goodsDescription": "Material pack goods description"
+    }
+  ],
+  "permittedTrader": [
+    {
+      "eori": "GB123456789000",
+      "startDate": "1998-01-15",
+      "endDate": "2077-01-15",
+      "name": "Company Name Ltd",
+      "address1": "21 The Street",
+      "address2": "Romford",
+      "address3": "Essex",
+      "address4": "Essex4",
+      "address5": "Essex5",
+      "postcode": "RM12DE",
+      "countryCode": "UK"
+    },
+    {
+      "eori": "GB234567891000",
+      "startDate": "1998-01-15",
+      "endDate": "2077-01-15",
+      "name": "New Company Name Ltd",
+      "address1": "Alexander House",
+      "address2": "21 Victoria Avenue",
+      "address3": "Southend-on-Sea",
+      "address4": "Essex",
+      "address5": "Essex5",
+      "postcode": "SS991AA",
+      "countryCode": "UK"
+    }
+  ],
+  "country": [
+    {
+      "countryGroup": "A016",
+      "countryUse": "E"
+    },
+    {
+      "countryCode": "AD",
+      "countryUse": "E"
+    },
+    {
+      "countryCode": "AE",
+      "countryUse": "E"
+    }
+  ],
+  "foreignTrader": [
+    {
+      "name": "Pete Truman",
+      "address1": "Washington Industrial Park",
+      "address2": "Alexander House",
+      "address3": "Southend-on-Sea",
+      "address4": "Essex",
+      "address5": "Essex5",
+      "postcode": "SS991AA",
+      "countryCode": "US"
+    }
+  ],
+  "restrictions": [
+    {
+      "text": "Not to be used for anything illegal"
+    },
+    {
+      "text": "Some other free text"
+    }
+  ]
+}

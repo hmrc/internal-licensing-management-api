@@ -5,9 +5,9 @@ info:
   title: Internal Licensing Management
 
 servers:
-  - url: https://test-api.service.hmrc.gov.uk/hello-world
+  - url: https://test-api.service.hmrc.gov.uk/
     description: Sandbox
-  - url: https://api.service.hmrc.gov.uk/hello-world
+  - url: https://api.service.hmrc.gov.uk/
     description: Production
 
 components:
@@ -17,33 +17,55 @@ components:
       in: header
       schema:
         type: string
-        enum: [
-          "application/vnd.hmrc.1.0+json",
-          "application/vnd.hmrc.1.0+xml"
-        ]
+        enum: [ "application/vnd.hmrc.1.0+json" ]
       required: true
 
 paths:
-  /hello-world:
-    get:
+  /customs/licence/{licenceRef}:
+    put:
       summary: Placeholder hello world endpoint
       description: |
         An endpoint that returns "Hello world"
       tags:
         - internal-licensing-management-api
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: './schemas/licence.json'
       parameters:
         - $ref: '#/components/parameters/acceptHeader'
       responses:
         200:
-          description: "OK Response"
+          description: "If the request is processed successfully and the licence is updated."
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: './schemas/response.json'
               example:
-                "Hello world"
+                {
+                  "correlationId": "123e4567-e89b-12d3-a456-426655440000",
+                  "sourceSystem": "CDS",
+                  "destinationSystem": "ILBDOTI",
+                  "licenceRef": "GBOIL123456",
+                  "result": "ACCEPTED"
+                }
+        201:
+          description: "If the request is processed successfully and the licence is created."
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/response.json'
+              example:
+                {
+                  "correlationId": "123e4567-e89b-12d3-a456-426655440000",
+                  "sourceSystem": "CDS",
+                  "destinationSystem": "ILBDOTI",
+                  "licenceRef": "GBOIL123456",
+                  "result": "ACCEPTED"
+                }
+
       security:
-        - {}
+        - userRestricted:
+            - write:internal-licensing-management
