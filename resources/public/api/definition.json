@@ -2,7 +2,7 @@
   "api": {
     "name": "Internal Licensing Management",
     "description": "An API for the support of the workflow around Internal Licensing Management",
-    "context": "customs/internal-licensing-management",
+    "context": "customs/licence",
     "categories": ["CUSTOMS"],
     "versions": [
       {

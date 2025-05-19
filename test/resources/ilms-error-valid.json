@@ -1,0 +1,14 @@
+{
+  "correlationId": "123e4567-e89b-12d3-a456-426655440000",
+  "sourceSystem": "CDS",
+  "destinationSystem": "ILBDOTI",
+  "licenceRef": "GBOIL123456",
+  "result": "REJECTED",
+  "errors": [
+    {
+      "code": "LIC.ERR.02",
+      "message": "Duplicate Foreign Traders not allowed",
+      "path": "/foreignTrader[1]/name"
+    }
+  ]
+}
