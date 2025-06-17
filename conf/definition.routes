@@ -1,2 +1,2 @@
-GET        /api/definition                 uk.gov.hmrc.internallicensingmanagementapi.controllers.DocumentationController.definition()
-GET        /api/conf/:version/*file        uk.gov.hmrc.internallicensingmanagementapi.controllers.DocumentationController.specification(version, file)
+GET        /api/definition                 uk.gov.hmrc.internallicensingmanagementapi.platform.controllers.DocumentationController.definition()
+GET        /api/conf/:version/*file        uk.gov.hmrc.internallicensingmanagementapi.platform.controllers.DocumentationController.specification(version, file)
