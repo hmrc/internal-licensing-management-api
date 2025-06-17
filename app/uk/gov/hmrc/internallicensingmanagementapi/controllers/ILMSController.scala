@@ -17,16 +17,22 @@
 package uk.gov.hmrc.internallicensingmanagementapi.controllers
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.libs.json.Json
+import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
+import uk.gov.hmrc.internallicensingmanagementapi.connectors.ILMSConnector
+import uk.gov.hmrc.internallicensingmanagementapi.models.ILMSRequest
+
 @Singleton()
-class MicroserviceHelloWorldController @Inject() (cc: ControllerComponents)
+class ILMSController @Inject() (cc: ControllerComponents, ilmsConnector: ILMSConnector)(implicit ec: ExecutionContext)
     extends BackendController(cc) {
 
-  def hello(): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok("Hello world"))
+  def licence(licenceRef: String): Action[ILMSRequest] = Action.async(controllerComponents.parsers.json[ILMSRequest]) { implicit request =>
+    ilmsConnector
+      .send(licenceRef, request.body)
+      .map(resp => Status(resp._1)(Json.toJson(resp._2)))
   }
 }

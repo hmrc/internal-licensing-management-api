@@ -23,9 +23,9 @@ components:
 paths:
   /customs/licence/{licenceRef}:
     put:
-      summary: Placeholder hello world endpoint
+      summary: Endpoint for upserting a licence
       description: |
-        An endpoint that returns "Hello world"
+        An endpoint that creates or updates a licence
       tags:
         - internal-licensing-management-api
       requestBody:
