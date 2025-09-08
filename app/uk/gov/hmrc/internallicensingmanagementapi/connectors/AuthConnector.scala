@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.internallicensingmanagementapi.models
+package uk.gov.hmrc.internallicensingmanagementapi.connectors
 
-import scala.io.Source
+import javax.inject.{Inject, Singleton}
 
-import play.api.libs.json.Json
-import uk.gov.hmrc.apiplatform.modules.common.utils.BaseJsonFormattersSpec
+import uk.gov.hmrc.auth.core.PlayAuthConnector
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-class ILMSRequestSpec extends BaseJsonFormattersSpec with TestData {
-
-  "given a ILMSRequest" should {
-    "produce json" in {
-      Json.toJson(Request.example) shouldBe Json.parse(Source.fromResource("./ilms-request-valid.json").mkString)
-
-    }
-
-    "read json" in {
-      val json = Source.fromResource("./ilms-request-valid.json").mkString
-
-      testFromJson[ILMSRequest](json)(Request.example)
-    }
-  }
+@Singleton
+class AuthConnector @Inject() (override val httpClientV2: HttpClientV2, servicesConfig: ServicesConfig) extends PlayAuthConnector {
+  override val serviceUrl: String = servicesConfig.baseUrl("auth")
 }

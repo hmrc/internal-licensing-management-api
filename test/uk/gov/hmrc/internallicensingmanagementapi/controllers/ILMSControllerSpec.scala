@@ -27,9 +27,10 @@ import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.apiplatform.modules.common.utils.HmrcSpec
 
 import uk.gov.hmrc.internallicensingmanagementapi.connectors.ILMSConnector
+import uk.gov.hmrc.internallicensingmanagementapi.mocks.AuthConnectorMockModule
 import uk.gov.hmrc.internallicensingmanagementapi.models.{ILMSRequest, ILMSResponse}
 
-class ILMSControllerSpec extends HmrcSpec with GuiceOneAppPerSuite {
+class ILMSControllerSpec extends HmrcSpec with GuiceOneAppPerSuite with AuthConnectorMockModule {
   implicit def mat: Materializer = app.injector.instanceOf[Materializer]
 
   implicit val ec = ExecutionContext.global
@@ -49,16 +50,28 @@ class ILMSControllerSpec extends HmrcSpec with GuiceOneAppPerSuite {
   )
   private val fakeRequest               = FakeRequest("PUT", "/customs/licence/abcdef").withHeaders("content-type" -> "application/json").withBody(emptyRequest)
   val ilmsMock                          = mock[ILMSConnector]
-  private val controller                = new ILMSController(Helpers.stubControllerComponents(), ilmsMock)
+  private val controller                = new ILMSController(Helpers.stubControllerComponents(), ilmsMock, mockAuthConnector)
 
   "PUT" should {
     "return 200" in {
+      Authorise.asPrivilegedApplication()
+
       when(ilmsMock.send(*, *)(*)).thenReturn(Future.successful((Status.OK, ILMSResponse(None, None, None, None, None, None))))
       val result = controller.licence("abcdef")(fakeRequest)
       status(result) shouldBe Status.OK
     }
 
-    "return 400" in {
+    "return 401 when auth'd as a standard app" in {
+      Authorise.asStandardApplication()
+
+      when(ilmsMock.send(*, *)(*)).thenReturn(Future.successful((Status.OK, ILMSResponse(None, None, None, None, None, None))))
+      val result = controller.licence("abcdef")(fakeRequest)
+      status(result) shouldBe Status.FORBIDDEN
+    }
+
+    "return 503 when downstream does" in {
+      Authorise.asPrivilegedApplication()
+
       when(ilmsMock.send(*, *)(*)).thenReturn(Future.successful((Status.INTERNAL_SERVER_ERROR, ILMSResponse(None, None, None, None, None, None))))
       val result = controller.licence("abcdef")(fakeRequest)
       status(result) shouldBe Status.INTERNAL_SERVER_ERROR

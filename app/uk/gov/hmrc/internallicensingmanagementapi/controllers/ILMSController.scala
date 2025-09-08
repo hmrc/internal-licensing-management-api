@@ -19,20 +19,27 @@ package uk.gov.hmrc.internallicensingmanagementapi.controllers
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
+import controllers.recovery
+
 import play.api.libs.json.Json
 import play.api.mvc._
+import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
+import uk.gov.hmrc.auth.core.{AuthProviders, AuthorisedFunctions}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-import uk.gov.hmrc.internallicensingmanagementapi.connectors.ILMSConnector
+import uk.gov.hmrc.internallicensingmanagementapi.connectors.{AuthConnector, ILMSConnector}
 import uk.gov.hmrc.internallicensingmanagementapi.models.ILMSRequest
 
 @Singleton()
-class ILMSController @Inject() (cc: ControllerComponents, ilmsConnector: ILMSConnector)(implicit ec: ExecutionContext)
-    extends BackendController(cc) {
+class ILMSController @Inject() (cc: ControllerComponents, ilmsConnector: ILMSConnector, val authConnector: AuthConnector)(implicit ec: ExecutionContext)
+    extends BackendController(cc) with AuthorisedFunctions {
 
-  def licence(licenceRef: String): Action[ILMSRequest] = Action.async(controllerComponents.parsers.json[ILMSRequest]) { implicit request =>
-    ilmsConnector
-      .send(licenceRef, request.body)
-      .map(resp => Status(resp._1)(Json.toJson(resp._2)))
+  def licence(licenceRef: String): Action[ILMSRequest] = Action.async(controllerComponents.parsers.json[ILMSRequest]) {
+    implicit request =>
+      authorised(AuthProviders(PrivilegedApplication)) {
+        ilmsConnector
+          .send(licenceRef, request.body)
+          .map(resp => Status(resp._1)(Json.toJson(resp._2)))
+      } recover recovery
   }
 }
