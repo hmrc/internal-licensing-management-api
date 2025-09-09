@@ -19,7 +19,11 @@ package uk.gov.hmrc.internallicensingmanagementapi.connectors
 import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
 
-import play.api.libs.json.Json
+import com.fasterxml.jackson.core.JsonParseException
+
+import play.api.Logger
+import play.api.http.Status.INTERNAL_SERVER_ERROR
+import play.api.libs.json.{JsSuccess, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
@@ -28,12 +32,26 @@ import uk.gov.hmrc.internallicensingmanagementapi.models.{ILMSRequest, ILMSRespo
 
 @Singleton
 class ILMSConnector @Inject() (http: HttpClientV2, config: ILMSConfig)(implicit ec: ExecutionContext) {
+  val logger = Logger("application")
 
   def send(licenceRef: String, request: ILMSRequest)(implicit hc: HeaderCarrier): Future[(Int, ILMSResponse)] = {
     http.put(url"${config.baseUrl}/customs/licence/$licenceRef")
       .withBody(Json.toJson(request))
       .execute[HttpResponse]
-      .map(resp => (resp.status, Json.parse(resp.body).as[ILMSResponse]))
+      .map(resp =>
+        try {
+          Json.fromJson[ILMSResponse](resp.json) match {
+            case JsSuccess(value, _) if value != ILMSResponse.blankResponse => (resp.status, value)
+            case _                                                          =>
+              logger.error(s"${resp.status} : Unexpected Json Response")
+              (INTERNAL_SERVER_ERROR, ILMSResponse.internalErrorResponse)
+          }
+        } catch {
+          case _: JsonParseException =>
+            logger.error(s"${resp.status} : None Json Response Received")
+            (INTERNAL_SERVER_ERROR, ILMSResponse.internalErrorResponse)
+        }
+      )
   }
 }
 

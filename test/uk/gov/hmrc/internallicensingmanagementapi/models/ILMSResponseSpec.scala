@@ -21,37 +21,35 @@ import scala.io.Source
 import play.api.libs.json.Json
 import uk.gov.hmrc.apiplatform.modules.common.utils.BaseJsonFormattersSpec
 
-class ILMSResponseSpec extends BaseJsonFormattersSpec {
-  val example = ILMSResponse(Some("123e4567-e89b-12d3-a456-426655440000"), Some("CDS"), Some("ILBDOTI"), Some("GBOIL123456"), Some("ACCEPTED"), None)
+class ILMSResponseSpec extends BaseJsonFormattersSpec with TestData {
 
-  val error = ILMSResponse(
-    Some("123e4567-e89b-12d3-a456-426655440000"),
-    Some("CDS"),
-    Some("ILBDOTI"),
-    Some("GBOIL123456"),
-    Some("REJECTED"),
-    Some(List(ILMSError(Some("LIC.ERR.02"), Some("Duplicate Foreign Traders not allowed"), Some("/foreignTrader[1]/name"))))
-  )
   "given a ILMSResponse" should {
-    "produce response json" in {
-      Json.toJson(example) shouldBe Json.parse(Source.fromResource("./ilms-response-valid.json").mkString)
 
+    "produce response json" in {
+      Json.toJson(Response.example) shouldBe Json.parse(Source.fromResource("./ilms-response-valid.json").mkString)
     }
+
     "produce error json" in {
-      Json.toJson(error) shouldBe Json.parse(Source.fromResource("./ilms-error-valid.json").mkString)
+      Json.toJson(Response.error) shouldBe Json.parse(Source.fromResource("./ilms-error-valid.json").mkString)
 
     }
 
     "read response json" in {
       val json = Source.fromResource("./ilms-response-valid.json").mkString
 
-      testFromJson[ILMSResponse](json)(example)
+      testFromJson[ILMSResponse](json)(Response.example)
+    }
+
+    "Ignore extra fields in response json" in {
+      val json = Source.fromResource("./ilms-response-extra.json").mkString
+
+      testFromJson[ILMSResponse](json)(Response.example)
     }
 
     "read error json" in {
       val json = Source.fromResource("./ilms-error-valid.json").mkString
 
-      testFromJson[ILMSResponse](json)(error)
+      testFromJson[ILMSResponse](json)(Response.error)
     }
   }
 }

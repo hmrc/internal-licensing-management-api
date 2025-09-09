@@ -23,9 +23,9 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.{Application, Configuration, Mode}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import uk.gov.hmrc.internallicensingmanagementapi.models.{ILMSRequest, ILMSResponse}
+import uk.gov.hmrc.internallicensingmanagementapi.models.{ILMSResponse, TestData}
 
-class ILMSConnectorIntegrationSpec extends BaseConnectorIntegrationSpec with GuiceOneAppPerSuite {
+class ILMSConnectorIntegrationSpec extends BaseConnectorIntegrationSpec with GuiceOneAppPerSuite with TestData {
 
   private val stubConfig = Configuration(
     "microservice.services.internal-licensing-management.port" -> stubPort
@@ -37,25 +37,36 @@ class ILMSConnectorIntegrationSpec extends BaseConnectorIntegrationSpec with Gui
       .in(Mode.Test)
       .build()
 
-  private val emptyResponse             = ILMSResponse(None, None, None, None, None, None)
-  private val emptyRequest: ILMSRequest = ILMSRequest(None, None, None, None, None, None, None, None, None, None, None)
-
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val underTest                  = app.injector.instanceOf[ILMSConnector]
 
   "send" should {
     "pass back a success" in {
       stubPut("/customs/licence/abc")
-      val result = await(underTest.send("abc", emptyRequest))
+      val result = await(underTest.send("abc", Request.example))
       result._1 shouldBe Status.OK
-      result._2 shouldBe emptyResponse
+      result._2 shouldBe Response.example
     }
 
     "pass back an error" in {
-      stubPut("/customs/licence/abc", Status.BAD_REQUEST)
-      val result = await(underTest.send("abc", emptyRequest))
+      stubPut("/customs/licence/abc", Status.BAD_REQUEST, "ilms-error-valid.json")
+      val result = await(underTest.send("abc", Request.example))
       result._1 shouldBe Status.BAD_REQUEST
-      result._2 shouldBe emptyResponse
+      result._2 shouldBe Response.error
+    }
+
+    "pass back an internal error if we get Json with the wrong shape" in {
+      stubPut("/customs/licence/abc", Status.BAD_REQUEST, "unexpected.json")
+      val result = await(underTest.send("abc", Request.example))
+      result._1 shouldBe Status.INTERNAL_SERVER_ERROR
+      result._2 shouldBe ILMSResponse.internalErrorResponse
+    }
+
+    "pass back an internal error if we get malformed response" in {
+      stubPut("/customs/licence/abc", Status.BAD_REQUEST, "invalid.html")
+      val result = await(underTest.send("abc", Request.example))
+      result._1 shouldBe Status.INTERNAL_SERVER_ERROR
+      result._2 shouldBe ILMSResponse.internalErrorResponse
     }
 
   }

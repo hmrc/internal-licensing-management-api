@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.internallicensingmanagementapi.connectors
 
+import scala.io.Source
+
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
@@ -64,13 +66,13 @@ trait BaseConnectorIntegrationSpec
     super.afterEach()
   }
 
-  def stubPut(path: String, status: Int = OK) = stubFor(
+  def stubPut(path: String, status: Int = OK, filename: String = "ilms-response-valid.json") = stubFor(
     put(urlEqualTo(s"$path"))
       .willReturn(
         aResponse()
           .withStatus(status)
           .withHeader("Content-Type", "application/json")
-          .withBody("{}")
+          .withBody(Source.fromResource(s"./$filename").getLines().mkString)
       )
   )
 }

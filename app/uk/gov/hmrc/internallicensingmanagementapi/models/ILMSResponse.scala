@@ -35,4 +35,9 @@ object ILMSError {
 
 object ILMSResponse {
   implicit val respFormat: OFormat[ILMSResponse] = Json.format[ILMSResponse]
+  val blankResponse: ILMSResponse                = ILMSResponse(None, None, None, None, None, None)
+
+  def errorResponse(errMsg: String): ILMSResponse = { blankResponse.copy(errors = Some(Seq(ILMSError(None, Some(errMsg), None)))) }
+
+  val internalErrorResponse: ILMSResponse = errorResponse("There was an unknown server error")
 }
