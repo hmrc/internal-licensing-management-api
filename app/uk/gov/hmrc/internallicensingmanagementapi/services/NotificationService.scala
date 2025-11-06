@@ -17,19 +17,23 @@
 package uk.gov.hmrc.internallicensingmanagementapi.services
 
 import scala.concurrent.{ExecutionContext, Future}
+
 import jakarta.inject.{Inject, Singleton}
+
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.ClientId
 import uk.gov.hmrc.http.HeaderCarrier
+
 import uk.gov.hmrc.internallicensingmanagementapi.connectors.PPNSConnector
 import uk.gov.hmrc.internallicensingmanagementapi.models.{BoxNotFound, CreateNotificationResponse, PPNSError}
 
 @Singleton
 class NotificationService @Inject() (ppnsConnector: PPNSConnector)(implicit ec: ExecutionContext) {
 
-
-  def notifyUsage(clientId: ClientId, body: JsValue)(implicit hc: HeaderCarrier): Future[Either[PPNSError,CreateNotificationResponse]] = {
+  def notifyUsage(clientId: ClientId, body: JsValue)(implicit hc: HeaderCarrier): Future[Either[PPNSError, CreateNotificationResponse]] = {
     ppnsConnector.getBoxId(clientId)
-      .flatMap(maybeBox =>maybeBox.fold[Future[Either[PPNSError,CreateNotificationResponse]]](Future.successful(Left(BoxNotFound())))(box=> ppnsConnector.postMessage(box.boxId, body).map(Right(_))))
+      .flatMap(maybeBox =>
+        maybeBox.fold[Future[Either[PPNSError, CreateNotificationResponse]]](Future.successful(Left(BoxNotFound())))(box => ppnsConnector.postMessage(box.boxId, body).map(Right(_)))
+      )
   }
 }

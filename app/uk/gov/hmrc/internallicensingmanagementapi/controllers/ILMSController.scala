@@ -18,12 +18,15 @@ package uk.gov.hmrc.internallicensingmanagementapi.controllers
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
+
 import controllers.recovery
+
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core.{AuthProviders, AuthorisedFunctions}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+
 import uk.gov.hmrc.internallicensingmanagementapi.connectors.{AuthConnector, ILMSConnector}
 import uk.gov.hmrc.internallicensingmanagementapi.controllers.actions.{BearerAction, ClientIdAction}
 import uk.gov.hmrc.internallicensingmanagementapi.models.{BoxNotFound, CreateNotificationResponse, ILMSRequest}
@@ -54,8 +57,8 @@ class ILMSController @Inject() (
       implicit val request: Request[JsValue] = requestWithClientId.request
       notificationService.notifyUsage(requestWithClientId.clientId, requestWithClientId.request.body).map {
         case Right(CreateNotificationResponse(_)) => NoContent
-        case Left(BoxNotFound()) => NotFound(Json.toJson(Map("error" -> "Box not found")))
-        case Left(_) => InternalServerError
-      }
+        case Left(BoxNotFound())                  => NotFound(Json.toJson(Map("error" -> "Box not found")))
+        case Left(_)                              => InternalServerError
+      } recover recovery
   }
 }

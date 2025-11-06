@@ -23,7 +23,7 @@ import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.ClientId
 
-import uk.gov.hmrc.internallicensingmanagementapi.models.{CreateNotificationResponse, NotificationId}
+import uk.gov.hmrc.internallicensingmanagementapi.models.{BoxNotFound, CreateNotificationResponse, NotificationId}
 import uk.gov.hmrc.internallicensingmanagementapi.services.NotificationService
 
 trait NotificationServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
@@ -34,7 +34,12 @@ trait NotificationServiceMockModule extends MockitoSugar with ArgumentMatchersSu
 
     def succeeds() = {
       when(mockNotificationService.notifyUsage(*[ClientId], *)(*))
-        .thenReturn(Future.successful(CreateNotificationResponse(NotificationId.apply(UUID.randomUUID()))))
+        .thenReturn(Future.successful(Right(CreateNotificationResponse(NotificationId.apply(UUID.randomUUID())))))
+    }
+
+    def boxNotFound() = {
+      when(mockNotificationService.notifyUsage(*[ClientId], *)(*))
+        .thenReturn(Future.successful(Left(BoxNotFound())))
     }
 
   }

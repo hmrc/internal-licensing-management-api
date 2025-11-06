@@ -27,7 +27,7 @@ import play.api.{Application, Configuration, Mode}
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.ClientId
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 
-import uk.gov.hmrc.internallicensingmanagementapi.models.{Box, BoxId, CreateNotificationResponse, NotificationId, TestData}
+import uk.gov.hmrc.internallicensingmanagementapi.models._
 
 class PPNSConnectorIntegrationSpec extends BaseConnectorIntegrationSpec with GuiceOneAppPerSuite with TestData {
 
@@ -54,12 +54,13 @@ class PPNSConnectorIntegrationSpec extends BaseConnectorIntegrationSpec with Gui
     "pass back a success" in {
       stubGet(s"/box?boxName=customs/licence%23%231.0%23%23callbackUrl&clientId=$clientId", filename = "ppns-box-valid.json")
       val result = await(underTest.getBoxId(clientId))
-      result shouldBe expectedBox
+      result.value shouldBe expectedBox
     }
 
-    "pass back a not-found" in {
+    "pass back a none when no box" in {
       stubGet(s"/box?boxName=customs/licence%23%231.0%23%23callbackUrl&clientId=$clientId", status = NOT_FOUND, filename = "ppns-box-valid.json")
-      intercept[UpstreamErrorResponse](await(underTest.getBoxId(clientId)))
+      val result = await(underTest.getBoxId(clientId))
+      result shouldBe None
     }
 
   }

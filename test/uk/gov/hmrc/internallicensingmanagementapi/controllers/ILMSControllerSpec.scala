@@ -98,6 +98,12 @@ class ILMSControllerSpec extends HmrcSpec with GuiceOneAppPerSuite with AuthConn
       status(result) shouldBe Status.NO_CONTENT
     }
 
+    "return 404 when BoxNotFound" in {
+      NotifyUsage.boxNotFound()
+      val result = controller.notifyUsage()(fakeNotify.withHeaders("Authorization" -> "Bearer Secret", "x-client-id" -> "totallyRealClientId"))
+      status(result) shouldBe Status.NOT_FOUND
+    }
+
     "return 400 without a clientId" in {
       val result = controller.notifyUsage()(fakeNotify.withHeaders("Authorization" -> "Bearer Secret"))
       status(result) shouldBe Status.BAD_REQUEST
