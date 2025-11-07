@@ -22,12 +22,13 @@ import play.api.inject.{Binding, Module}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import uk.gov.hmrc.internallicensingmanagementapi.connectors.ILMSConfig
+import uk.gov.hmrc.internallicensingmanagementapi.connectors.{ILMSConfig, PPNSConfig}
 
 class ConfigurationModule extends Module {
 
   override def bindings(environment: Environment, configuration: Configuration): collection.Seq[Binding[_]] = Seq(
-    bind[ILMSConfig].toProvider[ILMSConfigProvider]
+    bind[ILMSConfig].toProvider[ILMSConfigProvider],
+    bind[PPNSConfig].toProvider[PPNSConfigProvider]
   )
 }
 
@@ -38,5 +39,15 @@ class ILMSConfigProvider @Inject() (val runModeConfiguration: Configuration, env
   override def get(): ILMSConfig = {
     val serviceBaseUrl = servicesConfig.baseUrl("internal-licensing-management")
     ILMSConfig(serviceBaseUrl)
+  }
+}
+
+@Singleton
+class PPNSConfigProvider @Inject() (val runModeConfiguration: Configuration, environment: Environment, servicesConfig: ServicesConfig)
+    extends Provider[PPNSConfig] {
+
+  override def get(): PPNSConfig = {
+    val serviceBaseUrl = servicesConfig.baseUrl("push-pull-notifications-api")
+    PPNSConfig(serviceBaseUrl)
   }
 }

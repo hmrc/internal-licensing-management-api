@@ -66,6 +66,26 @@ trait BaseConnectorIntegrationSpec
     super.afterEach()
   }
 
+  def stubGet(path: String, status: Int = OK, filename: String = "ilms-response-valid.json") = stubFor(
+    get(urlEqualTo(s"$path"))
+      .willReturn(
+        aResponse()
+          .withStatus(status)
+          .withHeader("Content-Type", "application/json")
+          .withBody(Source.fromResource(s"./$filename").getLines().mkString)
+      )
+  )
+
+  def stubPost(path: String, status: Int = OK, filename: String = "ilms-response-valid.json") = stubFor(
+    post(urlEqualTo(s"$path"))
+      .willReturn(
+        aResponse()
+          .withStatus(status)
+          .withHeader("Content-Type", "application/json")
+          .withBody(Source.fromResource(s"./$filename").getLines().mkString)
+      )
+  )
+
   def stubPut(path: String, status: Int = OK, filename: String = "ilms-response-valid.json") = stubFor(
     put(urlEqualTo(s"$path"))
       .willReturn(

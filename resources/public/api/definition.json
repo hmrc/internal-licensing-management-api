@@ -11,7 +11,15 @@
         "endpointsEnabled": true,
         "access": {
           "type": "PRIVATE"
-        } 
+        },
+        "fieldDefinitions": [
+          {
+            "name": "callbackUrl",
+            "shortDescription": "Callback URL",
+            "description": "Callback URL for notification of usage",
+            "type": "PPNSField"
+          }
+        ]
       }
     ]
   }

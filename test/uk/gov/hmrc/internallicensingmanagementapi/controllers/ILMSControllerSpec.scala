@@ -21,17 +21,26 @@ import scala.concurrent.{ExecutionContext, Future}
 import org.apache.pekko.stream.Materializer
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
+import play.api.Application
 import play.api.http.Status
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.apiplatform.modules.common.utils.HmrcSpec
 
 import uk.gov.hmrc.internallicensingmanagementapi.connectors.ILMSConnector
-import uk.gov.hmrc.internallicensingmanagementapi.mocks.AuthConnectorMockModule
+import uk.gov.hmrc.internallicensingmanagementapi.controllers.actions.{BearerAction, ClientIdAction}
+import uk.gov.hmrc.internallicensingmanagementapi.mocks.{AuthConnectorMockModule, NotificationServiceMockModule}
 import uk.gov.hmrc.internallicensingmanagementapi.models.{ILMSRequest, ILMSResponse}
 
-class ILMSControllerSpec extends HmrcSpec with GuiceOneAppPerSuite with AuthConnectorMockModule {
+class ILMSControllerSpec extends HmrcSpec with GuiceOneAppPerSuite with AuthConnectorMockModule with NotificationServiceMockModule {
   implicit def mat: Materializer = app.injector.instanceOf[Materializer]
+
+  override lazy val app: Application = GuiceApplicationBuilder().configure(
+    "authorised.tokens.0" -> "Secret",
+    "authorised.tokens.1" -> "Other Secret"
+  ).build()
 
   implicit val ec = ExecutionContext.global
 
@@ -48,11 +57,13 @@ class ILMSControllerSpec extends HmrcSpec with GuiceOneAppPerSuite with AuthConn
     None,
     None
   )
-  private val fakeRequest               = FakeRequest("PUT", "/customs/licence/abcdef").withHeaders("content-type" -> "application/json").withBody(emptyRequest)
+  private val fakeRequest               = FakeRequest("PUT", "/abcdef").withHeaders("content-type" -> "application/json").withBody(emptyRequest)
   val ilmsMock                          = mock[ILMSConnector]
-  private val controller                = new ILMSController(Helpers.stubControllerComponents(), ilmsMock, mockAuthConnector)
+  val bearerAction                      = app.injector.instanceOf[BearerAction]
+  val clientIdAction                    = app.injector.instanceOf[ClientIdAction]
+  private val controller                = new ILMSController(Helpers.stubControllerComponents(), ilmsMock, mockAuthConnector, mockNotificationService, bearerAction, clientIdAction)
 
-  "PUT" should {
+  "PUT license" should {
     "return 200" in {
       Authorise.asPrivilegedApplication()
 
@@ -77,4 +88,31 @@ class ILMSControllerSpec extends HmrcSpec with GuiceOneAppPerSuite with AuthConn
       status(result) shouldBe Status.INTERNAL_SERVER_ERROR
     }
   }
+
+  "PUT notify license" should {
+    val fakeNotify: FakeRequest[JsValue] = FakeRequest("PUT", "/icms2/licence/notifyUsage").withBody(Json.toJson(emptyRequest))
+
+    "return 204 with the correct bearer" in {
+      NotifyUsage.succeeds()
+      val result = controller.notifyUsage()(fakeNotify.withHeaders("Authorization" -> "Bearer Secret", "x-client-id" -> "totallyRealClientId"))
+      status(result) shouldBe Status.NO_CONTENT
+    }
+
+    "return 404 when BoxNotFound" in {
+      NotifyUsage.boxNotFound()
+      val result = controller.notifyUsage()(fakeNotify.withHeaders("Authorization" -> "Bearer Secret", "x-client-id" -> "totallyRealClientId"))
+      status(result) shouldBe Status.NOT_FOUND
+    }
+
+    "return 400 without a clientId" in {
+      val result = controller.notifyUsage()(fakeNotify.withHeaders("Authorization" -> "Bearer Secret"))
+      status(result) shouldBe Status.BAD_REQUEST
+    }
+
+    "return 403 when no bearer" in {
+      val result = controller.notifyUsage()(fakeNotify)
+      status(result) shouldBe Status.FORBIDDEN
+    }
+  }
+
 }

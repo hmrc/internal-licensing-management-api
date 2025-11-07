@@ -17,11 +17,14 @@
 package uk.gov.hmrc.internallicensingmanagementapi.config
 
 import javax.inject.{Inject, Singleton}
+import scala.jdk.CollectionConverters._
 
 import play.api.Configuration
 
 @Singleton
 class AppConfig @Inject() (config: Configuration) {
 
-  val appName: String = config.get[String]("appName")
+  val appName: String                = config.get[String]("appName")
+  val authorisedTokens: List[String] = config.underlying.getStringList("authorised.tokens").asScala.toList
+
 }
