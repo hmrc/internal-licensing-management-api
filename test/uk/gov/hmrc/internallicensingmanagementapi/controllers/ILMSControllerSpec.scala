@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.internallicensingmanagementapi.controllers
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 import org.apache.pekko.stream.Materializer
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -42,7 +42,7 @@ class ILMSControllerSpec extends HmrcSpec with GuiceOneAppPerSuite with AuthConn
     "authorised.tokens.1" -> "Other Secret"
   ).build()
 
-  implicit val ec = ExecutionContext.global
+  implicit val ec: ExecutionContextExecutor = ExecutionContext.global
 
   private val emptyRequest: ILMSRequest = ILMSRequest(
     None,

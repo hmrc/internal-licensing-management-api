@@ -13,7 +13,8 @@
   ],
   "properties": {
     "correlationId": {
-      "type": "string"
+      "type": "string",
+      "format": "uuid"
     },
     "sourceSystem": {
       "type": "string"
