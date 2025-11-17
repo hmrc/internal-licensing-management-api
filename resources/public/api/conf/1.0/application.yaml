@@ -32,6 +32,12 @@ components:
         type: string
         enum: [ "application/vnd.hmrc.1.0+json" ]
       required: true
+    licenceRef:
+      name: Licence Reference
+      in: path
+      schema:
+        type: string
+      required: true
 
 paths:
   /customs/licence/{licenceRef}:
@@ -49,6 +55,7 @@ paths:
               $ref: './schemas/licence.json'
       parameters:
         - $ref: '#/components/parameters/acceptHeader'
+        - $ref: '#/components/parameters/licenceRef'
       responses:
         200:
           description: "If the request is processed successfully and the licence is updated."
@@ -78,6 +85,33 @@ paths:
                   "licenceRef": "GBOIL123456",
                   "result": "ACCEPTED"
                 }
+        400:
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/response.json'
+              example:
+                {
+                  "correlationId": "123e4567-e89b-12d3-a456-426655440000",
+                  "sourceSystem": "CDS",
+                  "destinationSystem": "ILBDOTI",
+                  "licenceRef": "GBOIL123456",
+                  "result": "REJECTED",
+                  "errors": [
+                    {
+                      "code": "LIC.ERR.02",
+                      "message": "Duplicate Foreign Traders not allowed",
+                      "path": "/foreignTrader[1]/name"
+                    }
+                  ]
+                }
+        503:
+          description: HTTP 503 indicates an unexpected technical error
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/response.json'
 
       security:
         - userRestricted:
