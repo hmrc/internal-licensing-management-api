@@ -9,7 +9,8 @@
       "type": "string","format": "date-time"
     },
     "correlationId": {
-      "type": "string"
+      "type": "string",
+      "format": "uuid"
     },
     "sourceSystem": {
       "type": "string"
