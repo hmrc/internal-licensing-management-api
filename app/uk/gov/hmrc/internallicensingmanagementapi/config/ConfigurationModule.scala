@@ -37,8 +37,9 @@ class ILMSConfigProvider @Inject() (val runModeConfiguration: Configuration, env
     extends Provider[ILMSConfig] {
 
   override def get(): ILMSConfig = {
-    val serviceBaseUrl = servicesConfig.baseUrl("internal-licensing-management")
-    ILMSConfig(serviceBaseUrl)
+    val serviceBaseUrl  = servicesConfig.baseUrl("internal-licensing-management")
+    val ilmsBearerToken = servicesConfig.getString("internal-licensing-management.bearerToken")
+    ILMSConfig(serviceBaseUrl, ilmsBearerToken)
   }
 }
 

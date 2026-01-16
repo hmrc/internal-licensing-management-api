@@ -28,7 +28,8 @@ import uk.gov.hmrc.internallicensingmanagementapi.models.{ILMSResponse, TestData
 class ILMSConnectorIntegrationSpec extends BaseConnectorIntegrationSpec with GuiceOneAppPerSuite with TestData {
 
   private val stubConfig = Configuration(
-    "microservice.services.internal-licensing-management.port" -> stubPort
+    "microservice.services.internal-licensing-management.port" -> stubPort,
+    "internal-licensing-management.bearerToken"                -> "TESTTOKEN"
   )
 
   override def fakeApplication(): Application =

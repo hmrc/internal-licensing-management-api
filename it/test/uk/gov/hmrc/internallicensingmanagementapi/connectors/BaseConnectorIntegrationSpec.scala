@@ -88,6 +88,7 @@ trait BaseConnectorIntegrationSpec
 
   def stubPut(path: String, status: Int = OK, filename: String = "ilms-response-valid.json") = stubFor(
     put(urlEqualTo(s"$path"))
+      .withHeader("authorization", equalTo("bearer TESTTOKEN"))
       .willReturn(
         aResponse()
           .withStatus(status)
