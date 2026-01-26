@@ -19,8 +19,6 @@ package uk.gov.hmrc.internallicensingmanagementapi.connectors
 import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
 
-import com.fasterxml.jackson.core.JsonParseException
-
 import play.api.Logger
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.{JsSuccess, Json}
@@ -47,8 +45,8 @@ class ILMSConnector @Inject() (http: HttpClientV2, config: ILMSConfig)(implicit 
               (INTERNAL_SERVER_ERROR, ILMSResponse.internalErrorResponse)
           }
         } catch {
-          case _: JsonParseException =>
-            logger.error(s"${resp.status} : None Json Response Received")
+          case _: Throwable =>
+            logger.error(s"${resp.status} : ${resp.body}")
             (INTERNAL_SERVER_ERROR, ILMSResponse.internalErrorResponse)
         }
       )
