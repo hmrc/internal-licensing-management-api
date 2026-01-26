@@ -70,5 +70,12 @@ class ILMSConnectorIntegrationSpec extends BaseConnectorIntegrationSpec with Gui
       result._2 shouldBe ILMSResponse.internalErrorResponse
     }
 
+    "pass back an internal error if we get an empty response" in {
+      stubPut("/customs/licence/abc", Status.BAD_REQUEST, "emptyresponse")
+      val result = await(underTest.send("abc", Request.example))
+      result._1 shouldBe Status.INTERNAL_SERVER_ERROR
+      result._2 shouldBe ILMSResponse.internalErrorResponse
+    }
+
   }
 }
