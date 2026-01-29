@@ -1,4 +1,4 @@
 # microservice specific routes
 
-PUT        /icms2/licence/notifyUsage           uk.gov.hmrc.internallicensingmanagementapi.controllers.ILMSController.notifyUsage()
+PUT        /mdtp/licence/notifyUsage            uk.gov.hmrc.internallicensingmanagementapi.controllers.ILMSController.notifyUsage()
 PUT        /:licenceRef                         uk.gov.hmrc.internallicensingmanagementapi.controllers.ILMSController.licence(licenceRef: String)
