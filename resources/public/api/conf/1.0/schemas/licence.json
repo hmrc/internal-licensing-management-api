@@ -71,7 +71,7 @@
             "type": "number"
           },
           "lineNumber": {
-            "type": "number"
+            "type": "integer"
           }
         },
         "required": ["lineNumber"        ]
@@ -87,10 +87,12 @@
             "type": "string"
           },
           "startDate": {
-            "type": "string"
+            "type": "string",
+            "format": "date"
           },
           "endDate": {
-            "type": "string"
+            "type": "string",
+            "format": "date"
           },
           "name": {
             "type": "string"
