@@ -67,7 +67,7 @@ class ILMSControllerSpec extends HmrcSpec with GuiceOneAppPerSuite with AuthConn
     "return 200" in {
       Authorise.asPrivilegedApplication()
 
-      when(ilmsMock.send(*, *)(*)).thenReturn(Future.successful((Status.OK, ILMSResponse(None, None, None, None, None, None))))
+      when(ilmsMock.send(*)(*)).thenReturn(Future.successful((Status.OK, ILMSResponse(None, None, None, None, None, None))))
       val result = controller.licence("abcdef")(fakeRequest)
       status(result) shouldBe Status.OK
     }
@@ -75,7 +75,7 @@ class ILMSControllerSpec extends HmrcSpec with GuiceOneAppPerSuite with AuthConn
     "return 401 when auth'd as a standard app" in {
       Authorise.asStandardApplication()
 
-      when(ilmsMock.send(*, *)(*)).thenReturn(Future.successful((Status.OK, ILMSResponse(None, None, None, None, None, None))))
+      when(ilmsMock.send(*)(*)).thenReturn(Future.successful((Status.OK, ILMSResponse(None, None, None, None, None, None))))
       val result = controller.licence("abcdef")(fakeRequest)
       status(result) shouldBe Status.FORBIDDEN
     }
@@ -83,7 +83,7 @@ class ILMSControllerSpec extends HmrcSpec with GuiceOneAppPerSuite with AuthConn
     "return 503 when downstream does" in {
       Authorise.asPrivilegedApplication()
 
-      when(ilmsMock.send(*, *)(*)).thenReturn(Future.successful((Status.INTERNAL_SERVER_ERROR, ILMSResponse(None, None, None, None, None, None))))
+      when(ilmsMock.send(*)(*)).thenReturn(Future.successful((Status.INTERNAL_SERVER_ERROR, ILMSResponse(None, None, None, None, None, None))))
       val result = controller.licence("abcdef")(fakeRequest)
       status(result) shouldBe Status.INTERNAL_SERVER_ERROR
     }

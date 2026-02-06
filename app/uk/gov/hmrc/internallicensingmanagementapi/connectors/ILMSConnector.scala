@@ -34,8 +34,8 @@ import uk.gov.hmrc.internallicensingmanagementapi.models.{ILMSRequest, ILMSRespo
 class ILMSConnector @Inject() (http: HttpClientV2, config: ILMSConfig)(implicit ec: ExecutionContext) {
   val logger = Logger("application")
 
-  def send(licenceRef: String, request: ILMSRequest)(implicit hc: HeaderCarrier): Future[(Int, ILMSResponse)] = {
-    http.put(url"${config.baseUrl}/customs/licence/$licenceRef")
+  def send(request: ILMSRequest)(implicit hc: HeaderCarrier): Future[(Int, ILMSResponse)] = {
+    http.put(url"${config.baseUrl}/cds/lic01/v1")
       .setHeader("authorization" -> s"bearer ${config.bearerToken}")
       .withBody(Json.toJson(request))
       .execute[HttpResponse]

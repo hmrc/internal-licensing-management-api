@@ -47,7 +47,7 @@ class ILMSController @Inject() (
     implicit request =>
       authorised(AuthProviders(PrivilegedApplication)) {
         ilmsConnector
-          .send(licenceRef, request.body)
+          .send(request.body)
           .map(resp => Status(resp._1)(Json.toJson(resp._2)))
       } recover recovery
   }

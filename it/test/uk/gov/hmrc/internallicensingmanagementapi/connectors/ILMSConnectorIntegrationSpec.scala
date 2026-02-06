@@ -43,36 +43,36 @@ class ILMSConnectorIntegrationSpec extends BaseConnectorIntegrationSpec with Gui
 
   "send" should {
     "pass back a success" in {
-      stubPut("/customs/licence/abc")
-      val result = await(underTest.send("abc", Request.example))
+      stubPut("/cds/lic01/v1")
+      val result = await(underTest.send(Request.example))
       result._1 shouldBe Status.OK
       result._2 shouldBe Response.example
     }
 
     "pass back an error" in {
-      stubPut("/customs/licence/abc", Status.BAD_REQUEST, "ilms-error-valid.json")
-      val result = await(underTest.send("abc", Request.example))
+      stubPut("/cds/lic01/v1", Status.BAD_REQUEST, "ilms-error-valid.json")
+      val result = await(underTest.send(Request.example))
       result._1 shouldBe Status.BAD_REQUEST
       result._2 shouldBe Response.error
     }
 
     "pass back an internal error if we get Json with the wrong shape" in {
-      stubPut("/customs/licence/abc", Status.BAD_REQUEST, "unexpected.json")
-      val result = await(underTest.send("abc", Request.example))
+      stubPut("/cds/lic01/v1", Status.BAD_REQUEST, "unexpected.json")
+      val result = await(underTest.send(Request.example))
       result._1 shouldBe Status.INTERNAL_SERVER_ERROR
       result._2 shouldBe ILMSResponse.internalErrorResponse
     }
 
     "pass back an internal error if we get malformed response" in {
-      stubPut("/customs/licence/abc", Status.BAD_REQUEST, "invalid.html")
-      val result = await(underTest.send("abc", Request.example))
+      stubPut("/cds/lic01/v1", Status.BAD_REQUEST, "invalid.html")
+      val result = await(underTest.send(Request.example))
       result._1 shouldBe Status.INTERNAL_SERVER_ERROR
       result._2 shouldBe ILMSResponse.internalErrorResponse
     }
 
     "pass back an internal error if we get an empty response" in {
-      stubPut("/customs/licence/abc", Status.BAD_REQUEST, "emptyresponse")
-      val result = await(underTest.send("abc", Request.example))
+      stubPut("/cds/lic01/v1", Status.BAD_REQUEST, "emptyresponse")
+      val result = await(underTest.send(Request.example))
       result._1 shouldBe Status.INTERNAL_SERVER_ERROR
       result._2 shouldBe ILMSResponse.internalErrorResponse
     }
