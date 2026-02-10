@@ -44,7 +44,7 @@ class ILMSConnector @Inject() (http: HttpClientV2, config: ILMSConfig)(implicit 
           Json.fromJson[ILMSResponse](resp.json) match {
             case JsSuccess(value, _) if value != ILMSResponse.blankResponse => (resp.status, value)
             case _                                                          =>
-              logger.error(s"${resp.status} : Unexpected Json Response")
+              logger.error(s"${resp.status} : Unexpected Json Response : ${resp.json}")
               (INTERNAL_SERVER_ERROR, ILMSResponse.internalErrorResponse)
           }
         } catch {
