@@ -36,7 +36,7 @@ class ILMSConnector @Inject() (http: HttpClientV2, config: ILMSConfig)(implicit 
 
   def send(request: ILMSRequest)(implicit hc: HeaderCarrier): Future[(Int, ILMSResponse)] = {
     http.put(url"${config.baseUrl}/cds/lic01/v1")
-      .setHeader("authorization" -> s"bearer ${config.bearerToken}")
+      .setHeader("authorization" -> s"Bearer ${config.bearerToken}")
       .withBody(Json.toJson(request))
       .execute[HttpResponse]
       .map(resp =>
