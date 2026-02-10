@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.internallicensingmanagementapi.connectors
 
+import java.time.format.DateTimeFormatter
+import java.time.{Clock, ZoneOffset}
 import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -24,6 +26,7 @@ import com.fasterxml.jackson.core.JacksonException
 import play.api.Logger
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.{JsSuccess, Json}
+import uk.gov.hmrc.apiplatform.modules.common.services.ClockNow
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
@@ -31,12 +34,13 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.internallicensingmanagementapi.models.{ILMSRequest, ILMSResponse}
 
 @Singleton
-class ILMSConnector @Inject() (http: HttpClientV2, config: ILMSConfig)(implicit ec: ExecutionContext) {
+class ILMSConnector @Inject() (http: HttpClientV2, config: ILMSConfig, val clock: Clock)(implicit ec: ExecutionContext) extends ClockNow {
   val logger = Logger("application")
 
   def send(request: ILMSRequest)(implicit hc: HeaderCarrier): Future[(Int, ILMSResponse)] = {
     http.put(url"${config.baseUrl}/cds/lic01/v1")
       .setHeader("authorization" -> s"Bearer ${config.bearerToken}")
+      .setHeader("date" -> s"${DateTimeFormatter.RFC_1123_DATE_TIME.format(instant().atOffset(ZoneOffset.UTC))}")
       .withBody(Json.toJson(request))
       .execute[HttpResponse]
       .map(resp =>
