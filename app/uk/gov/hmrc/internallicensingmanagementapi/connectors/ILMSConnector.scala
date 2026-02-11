@@ -24,6 +24,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import com.fasterxml.jackson.core.JacksonException
 
 import play.api.Logger
+import play.api.http.HeaderNames
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.{JsSuccess, Json}
 import uk.gov.hmrc.apiplatform.modules.common.services.ClockNow
@@ -39,8 +40,11 @@ class ILMSConnector @Inject() (http: HttpClientV2, config: ILMSConfig, val clock
 
   def send(request: ILMSRequest)(implicit hc: HeaderCarrier): Future[(Int, ILMSResponse)] = {
     http.put(url"${config.baseUrl}/cds/lic01/v1")
-      .setHeader("authorization" -> s"Bearer ${config.bearerToken}")
-      .setHeader("date" -> s"${DateTimeFormatter.RFC_1123_DATE_TIME.format(instant().atOffset(ZoneOffset.UTC))}")
+      .setHeader(
+        HeaderNames.AUTHORIZATION    -> s"Bearer ${config.bearerToken}",
+        HeaderNames.DATE             -> s"${DateTimeFormatter.RFC_1123_DATE_TIME.format(instant().atOffset(ZoneOffset.UTC))}",
+        HeaderNames.X_FORWARDED_HOST -> "MDTP"
+      )
       .withBody(Json.toJson(request))
       .execute[HttpResponse]
       .map(resp =>
