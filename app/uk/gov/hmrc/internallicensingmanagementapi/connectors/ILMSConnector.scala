@@ -45,6 +45,7 @@ class ILMSConnector @Inject() (http: HttpClientV2, config: ILMSConfig, val clock
         HeaderNames.DATE             -> s"${DateTimeFormatter.RFC_1123_DATE_TIME.format(instant().atOffset(ZoneOffset.UTC))}",
         HeaderNames.X_FORWARDED_HOST -> "MDTP"
       )
+      .setHeader(hc.headers(Seq("x-client-id")): _*)
       .withBody(Json.toJson(request))
       .execute[HttpResponse]
       .map(resp =>

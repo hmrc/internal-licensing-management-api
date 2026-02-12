@@ -38,7 +38,7 @@ class ILMSConnectorIntegrationSpec extends BaseConnectorIntegrationSpec with Gui
       .in(Mode.Test)
       .build()
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val hc: HeaderCarrier = HeaderCarrier().withExtraHeaders("x-client-id" -> "CLIENT_ID")
   val underTest                  = app.injector.instanceOf[ILMSConnector]
 
   "send" should {
