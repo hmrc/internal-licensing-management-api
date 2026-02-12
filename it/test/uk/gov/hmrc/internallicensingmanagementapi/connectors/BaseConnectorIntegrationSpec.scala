@@ -90,6 +90,7 @@ trait BaseConnectorIntegrationSpec
     put(urlEqualTo(s"$path"))
       .withHeader("authorization", equalTo("Bearer TESTTOKEN"))
       .withHeader("x-forwarded-host", equalTo("MDTP"))
+      .withHeader("x-client-id", equalTo("CLIENT_ID"))
       .willReturn(
         aResponse()
           .withStatus(status)
