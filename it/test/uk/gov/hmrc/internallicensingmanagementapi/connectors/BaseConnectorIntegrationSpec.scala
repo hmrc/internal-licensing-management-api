@@ -91,6 +91,7 @@ trait BaseConnectorIntegrationSpec
       .withHeader("authorization", equalTo("Bearer TESTTOKEN"))
       .withHeader("x-forwarded-host", equalTo("MDTP"))
       .withHeader("x-client-id", equalTo("CLIENT_ID"))
+      .withHeader("accept", equalTo("application/json"))
       .willReturn(
         aResponse()
           .withStatus(status)
