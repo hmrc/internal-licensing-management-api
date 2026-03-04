@@ -16,9 +16,12 @@
 
 package uk.gov.hmrc.internallicensingmanagementapi.connectors
 
+import java.time.Clock
+
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
 import play.api.http.Status
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.{Application, Configuration, Mode}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -35,10 +38,11 @@ class ILMSConnectorIntegrationSpec extends BaseConnectorIntegrationSpec with Gui
   override def fakeApplication(): Application =
     GuiceApplicationBuilder()
       .configure(stubConfig)
+      .overrides(bind[Clock].toInstance(clock))
       .in(Mode.Test)
       .build()
 
-  implicit val hc: HeaderCarrier = HeaderCarrier().withExtraHeaders("x-client-id" -> "CLIENT_ID")
+  implicit val hc: HeaderCarrier = HeaderCarrier().withExtraHeaders("x-client-id" -> "CLIENT_ID", "x-correlation-id" -> "CORRELATION_ID")
   val underTest                  = app.injector.instanceOf[ILMSConnector]
 
   "send" should {
