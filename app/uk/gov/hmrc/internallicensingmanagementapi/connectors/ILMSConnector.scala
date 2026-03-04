@@ -36,17 +36,18 @@ import uk.gov.hmrc.internallicensingmanagementapi.models.{ILMSRequest, ILMSRespo
 
 @Singleton
 class ILMSConnector @Inject() (http: HttpClientV2, config: ILMSConfig, val clock: Clock)(implicit ec: ExecutionContext) extends ClockNow {
-  val logger = Logger("application")
+  val logger            = Logger("application")
+  val httpDateFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'")
 
   def send(request: ILMSRequest)(implicit hc: HeaderCarrier): Future[(Int, ILMSResponse)] = {
     http.put(url"${config.baseUrl}/cds/lic01/v1")
       .setHeader(
         HeaderNames.AUTHORIZATION    -> s"Bearer ${config.bearerToken}",
-        HeaderNames.DATE             -> s"${DateTimeFormatter.RFC_1123_DATE_TIME.format(instant().atOffset(ZoneOffset.UTC))}",
+        HeaderNames.DATE             -> s"${httpDateFormatter.format(instant().atOffset(ZoneOffset.UTC))}",
         HeaderNames.X_FORWARDED_HOST -> "MDTP",
         HeaderNames.ACCEPT           -> "application/json"
       )
-      .setHeader(hc.headers(Seq("x-client-id")): _*)
+      .setHeader(hc.headers(Seq("x-client-id", "x-correlation-id")): _*)
       .withBody(Json.toJson(request))
       .execute[HttpResponse]
       .map(resp =>

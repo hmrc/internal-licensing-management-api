@@ -29,6 +29,7 @@ import org.scalatestplus.play.WsScalaTestClient
 
 import play.api.http.Status.OK
 import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
+import uk.gov.hmrc.apiplatform.modules.common.utils.FixedClock
 
 trait BaseConnectorIntegrationSpec
     extends AnyWordSpec
@@ -38,7 +39,8 @@ trait BaseConnectorIntegrationSpec
     with DefaultAwaitTimeout
     with FutureAwaits
     with BeforeAndAfterAll
-    with BeforeAndAfterEach {
+    with BeforeAndAfterEach
+    with FixedClock {
   val stubPort       = sys.env.getOrElse("WIREMOCK", "22222").toInt
   val stubHost       = "localhost"
   val wireMockUrl    = s"http://$stubHost:$stubPort"
@@ -91,6 +93,8 @@ trait BaseConnectorIntegrationSpec
       .withHeader("authorization", equalTo("Bearer TESTTOKEN"))
       .withHeader("x-forwarded-host", equalTo("MDTP"))
       .withHeader("x-client-id", equalTo("CLIENT_ID"))
+      .withHeader("x-correlation-id", equalTo("CORRELATION_ID"))
+      .withHeader("date", equalTo("Thu, 02 Jan 2020 03:04:05 GMT"))
       .withHeader("accept", equalTo("application/json"))
       .willReturn(
         aResponse()
