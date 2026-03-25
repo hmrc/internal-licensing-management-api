@@ -106,6 +106,27 @@ paths:
                     }
                   ]
                 }
+        403:
+          description: "Business rule error"
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/response.json'
+              example:
+                {
+                  "correlationId": "3ad35b9c-db0c-47fe-b107-72de409e18d7",
+                  "sourceSystem": "CDS",
+                  "destinationSystem": "ILBDOTI",
+                  "licenceRef": "GBSIL0000005F",
+                  "result": "REJECTED",
+                  "errors": [
+                    {
+                      "code": "LIC.ERR.29",
+                      "message": "Permitted Trader EORI does not exist on CDS.",
+                      "path": "/permittedTrader[1]/eori"
+                    }
+                  ]
+                }
         503:
           description: HTTP 503 indicates an unexpected technical error
           content:
