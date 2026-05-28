@@ -40,6 +40,7 @@ class ILMSConnector @Inject() (http: HttpClientV2, config: ILMSConfig, val clock
   val httpDateFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'")
 
   def send(request: ILMSRequest)(implicit hc: HeaderCarrier): Future[(Int, ILMSResponse)] = {
+    logger.info(s"Send request client id: ${hc.headers(Seq("x-client-id"))}")
     http.put(url"${config.baseUrl}/cds/lic01/v1")
       .setHeader(
         HeaderNames.AUTHORIZATION    -> s"Bearer ${config.bearerToken}",
