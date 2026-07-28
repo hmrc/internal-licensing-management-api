@@ -120,9 +120,7 @@
           }
         },
         "required": [
-          "eori",
-          "name",
-          "address1"
+          "eori"
         ]
       },
       "additionalProperties": false
