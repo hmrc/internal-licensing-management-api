@@ -44,7 +44,7 @@ class ILMSConnector @Inject() (http: HttpClientV2, config: ILMSConfig, val clock
     http.put(url"${config.baseUrl}/cds/lic01/v1")
       .setHeader(
         HeaderNames.AUTHORIZATION    -> s"Bearer ${config.bearerToken}",
-        HeaderNames.DATE             -> s"${httpDateFormatter.format(instant().atOffset(ZoneOffset.UTC))}",
+        HeaderNames.DATE             -> s"${httpDateFormatter.format(instant.atOffset(ZoneOffset.UTC))}",
         HeaderNames.X_FORWARDED_HOST -> "MDTP",
         HeaderNames.ACCEPT           -> "application/json"
       )
